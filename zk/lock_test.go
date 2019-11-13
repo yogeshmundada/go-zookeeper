@@ -19,7 +19,7 @@ func TestLock(t *testing.T) {
 
 	acls := WorldACL(PermAll)
 
-	l := NewLock(zk, "/test", acls)
+	l := NewLock(zk, "/test", []byte{}, acls)
 	if err := l.Lock(); err != nil {
 		t.Fatal(err)
 	}
@@ -33,7 +33,7 @@ func TestLock(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	l2 := NewLock(zk, "/test", acls)
+	l2 := NewLock(zk, "/test", []byte{}, acls)
 	go func() {
 		if err := l2.Lock(); err != nil {
 			t.Fatal(err)
@@ -82,7 +82,7 @@ func TestMultiLevelLock(t *testing.T) {
 	} else if p != path {
 		t.Fatalf("Create returned different path '%s' != '%s'", p, path)
 	}
-	l := NewLock(zk, "/test-multi-level/lock", acls)
+	l := NewLock(zk, "/test-multi-level/lock", []byte{}, acls)
 	defer zk.Delete("/test-multi-level", -1) // Clean up what we've created for this test
 	defer zk.Delete("/test-multi-level/lock", -1)
 	if err := l.Lock(); err != nil {

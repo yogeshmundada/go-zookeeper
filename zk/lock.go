@@ -18,6 +18,7 @@ var (
 type Lock struct {
 	c        *Conn
 	path     string
+	value    []byte
 	acl      []ACL
 	lockPath string
 	seq      int
@@ -26,10 +27,11 @@ type Lock struct {
 // NewLock creates a new lock instance using the provided connection, path, and acl.
 // The path must be a node that is only used by this lock. A lock instances starts
 // unlocked until Lock() is called.
-func NewLock(c *Conn, path string, acl []ACL) *Lock {
+func NewLock(c *Conn, path string, value []byte, acl []ACL) *Lock {
 	return &Lock{
 		c:    c,
 		path: path,
+		value: value,
 		acl:  acl,
 	}
 }
