@@ -54,14 +54,18 @@ func (l *Lock) Lock() error {
 	path := ""
 	var err error
 	for i := 0; i < 3; i++ {
-		path, err = l.c.CreateProtectedEphemeralSequential(prefix, []byte{}, l.acl)
+		path, err = l.c.CreateProtectedEphemeralSequential(prefix, l.value, l.acl)
 		if err == ErrNoNode {
 			// Create parent node.
 			parts := strings.Split(l.path, "/")
 			pth := ""
-			for _, p := range parts[1:] {
+			for idx, p := range parts[1:] {
 				pth += "/" + p
-				_, err := l.c.Create(pth, l.value, 0, l.acl)
+				value := []byte{}
+				if idx == (len(parts) - 1) {
+					value = l.value
+				}
+				_, err := l.c.Create(pth, value, 0, l.acl)
 				if err != nil && err != ErrNodeExists {
 					return err
 				}
