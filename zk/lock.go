@@ -29,10 +29,10 @@ type Lock struct {
 // unlocked until Lock() is called.
 func NewLock(c *Conn, path string, value []byte, acl []ACL) *Lock {
 	return &Lock{
-		c:    c,
-		path: path,
+		c:     c,
+		path:  path,
 		value: value,
-		acl:  acl,
+		acl:   acl,
 	}
 }
 
@@ -61,7 +61,7 @@ func (l *Lock) Lock() error {
 			pth := ""
 			for _, p := range parts[1:] {
 				pth += "/" + p
-				_, err := l.c.Create(pth, []byte{}, 0, l.acl)
+				_, err := l.c.Create(pth, l.value, 0, l.acl)
 				if err != nil && err != ErrNodeExists {
 					return err
 				}
